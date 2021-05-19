@@ -22,6 +22,8 @@ IFR = Color(255,0,0)
 LIFR = Color(255,0,255)
 NO_DATA = Color(255,255,255)
 
+weather_color_map = {"VFR":VFR, "MVFR":MVFR, "IFR":IFR, "LIFR":LIFR}
+
 # Map Functions
 def getMetar(airport):
     weather = requests.get(f'{BASE_URL}{METAR_URL}{airport}')
@@ -38,21 +40,13 @@ def weatherColor(strip):
     
     for i in range(strip.numPixels()):
         weather = getMetar(airports[i])
-        if weather == 'VFR':
-            strip.setPixelColor(i, VFR)
-            strip.show()
-        elif weather == 'MVFR':
-            strip.setPixelColor(i, MVFR)
-            strip.show()
-        elif weather == 'IFR':
-            strip.setPixelColor(i, IFR)
-            strip.show()
-        elif weather == 'LIFR':
-            strip.setPixelColor(i, LIFR)
-            strip.show()
-        else:
-            strip.setPixelColor(i, NO_DATA)
-            strip.show()
+        try:
+            color = weather_color_map[weather]
+        except:
+            color = NO_DATA
+        
+        strip.setPixelColor(i, color)
+        strip.show()
         
 # Setup Function            
 def grey():
