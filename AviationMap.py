@@ -34,11 +34,10 @@ def getMetar(airport):
 def weatherColor(strip):
     # airports[6] = 7A5
     airports = ['KALX', 'KAUO', 'KCSG', 'KPXE',
-                'KOPN']
-    #, 'KLGC', 'KLGC', 'KANB',
-     #           'KASN', 'KGAD', 'KCTJ', 'KCCO',
-    #            'KFFC', 'KPUJ', 'KRYY', 'KFTY',
-     #           'KATL', 'KPDK', 'KLZU', 'KD73' ]
+                'KOPN', 'KLGC', 'KLGC', 'KANB',
+                'KANB', 'KGAD', 'KCTJ', 'KCCO',
+                'KFFC', 'KPUJ', 'KRYY', 'KFTY',
+                'KATL', 'KPDK', 'KLZU', 'KD73' ]
     
     for i in range(len(airports)):
         weather = getMetar(airports[i])
