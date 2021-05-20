@@ -21,6 +21,7 @@ MVFR = Color(0,0,255)
 IFR = Color(255,0,0)
 LIFR = Color(255,0,255)
 NO_DATA = Color(255,255,255)
+BLANK_COLOR = Color(0,0,0)
 
 weather_color_map = {"VFR":VFR, "MVFR":MVFR, "IFR":IFR, "LIFR":LIFR}
 
@@ -33,26 +34,39 @@ def getMetar(airport):
 def weatherColor(strip):
     # airports[6] = 7A5
     airports = ['KALX', 'KAUO', 'KCSG', 'KPXE',
-                'KOPN', 'KLGC', 'KLGC', 'KANB',
-                'KASN', 'KGAD', 'KCTJ', 'KCCO',
-                'KFFC', 'KPUJ', 'KRYY', 'KFTY',
-                'KATL', 'KPDK', 'KLZU', 'KD73' ]
+                'KOPN']
+    #, 'KLGC', 'KLGC', 'KANB',
+     #           'KASN', 'KGAD', 'KCTJ', 'KCCO',
+    #            'KFFC', 'KPUJ', 'KRYY', 'KFTY',
+     #           'KATL', 'KPDK', 'KLZU', 'KD73' ]
     
-    for i in range(strip.numPixels()):
+    for i in range(len(airports)):
         weather = getMetar(airports[i])
+        print(i)
+        print(airports[i])
         try:
             color = weather_color_map[weather]
         except:
             color = NO_DATA
         
+        
         strip.setPixelColor(i, color)
         strip.show()
         
 # Setup Function            
-def grey():
-    strip.setPixelColor(0, Color(255,0,0))
-    strip.show()
-            
+def testColors():
+    colorList = [Color(255,0,0), Color(0,255, 0), Color(0,0,255)]
+    for i in range(len(colorList)):
+        for j in range(0,5):
+            strip.setPixelColor(j, colorList[i])
+            strip.show()
+            time.sleep(1)
+
+def boardWipe(strip):
+    for i in range(strip.numPixels()):
+        strip.setPixelColor(i, color)
+        strip.show()
+        time.sleep(0.4)
 
 # Main program logic follows:
 if __name__ == '__main__':
@@ -60,13 +74,11 @@ if __name__ == '__main__':
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
     # Intialize the library (must be called once before other functions).
     strip.begin()
-
-    try:
-        while True:
-            #weatherColor(strip)
-            grey()
-            time.sleep(1)
-    except Exception as e:
-        strip.setPixelColor(0, Color(0,0,0))
-        strip.show()
-        print(f'An Exception has occurred: \n {e}')
+    while True:
+        try:
+            weatherColor(strip)
+            time.sleep(350)
+            
+        except Exception as e:
+            boardWipe(strip)
+            print(f'An error has occured, please contact Jerboa Technologies, LLC\nError: {e}')
