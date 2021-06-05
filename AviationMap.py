@@ -53,11 +53,9 @@ weather_color_map = {"VFR":VFR, "MVFR":MVFR, "IFR":IFR, "LIFR":LIFR}
 #         strip.show()
 
 def getWXMetar(airport):
-    hdr = {"X-API-Key": "ce822455b5f84c2788bee768f8"}
-    weather = requests.get(f"https://api.checkwx.com/metar/{airport}/decoded", headers=hdr)
-
+    weather = requests.get(f'{BASE_URL}{METAR_URL}{airport}')
     m = weather.json()
-    return m["data"][0]["flight_category"]
+    return m[airport]['category']
 
 def weatherWXColor(strip):
     # airports[6] = 7A5
@@ -69,7 +67,7 @@ def weatherWXColor(strip):
 
     for i in range(len(airports)):
         weather = getWXMetar(airports[i])
-        if weather == 'UNK':
+        if weather == "":
             weather = getManualWeather(airports[i])
         print(i)
         print(airports[i])
@@ -82,14 +80,12 @@ def weatherWXColor(strip):
         strip.show()
 
 def getManualWeather(airport):
-    hdr = {"X-API-Key": "ce822455b5f84c2788bee768f8"}
-    weather = requests.get(f"https://api.checkwx.com/metar/{airport}/decoded", headers=hdr)
-
+    weather = requests.get(f'{BASE_URL}{METAR_URL}{airport}')
     m = weather.json()
-    visibility = m['data'][0]['visibility']['miles_float']
+
+    visibility = m[airport]['visibility']
     try:
-        ceiling = m['data'][0]['ceiling']
-        ceiling_feet = ceiling["feet"]
+        ceiling_feet = float(m['sky_conditions'][0]['base_agl'])
     except:
         ceiling_feet = None
 
@@ -130,7 +126,7 @@ if __name__ == '__main__':
         try:
             # weatherColor(strip)
             weatherWXColor(strip)
-            time.sleep(45)
+            time.sleep(60)
             
         except Exception as e:
             boardWipe(strip)
