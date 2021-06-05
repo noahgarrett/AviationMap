@@ -58,7 +58,7 @@ def getWXMetar(airport):
 
     m = weather.json()
     return m["data"][0]["flight_category"]
-+
+
 def weatherWXColor(strip):
     # airports[6] = 7A5
     airports = ['KALX', 'KAUO', 'KCSG', 'KPXE',
