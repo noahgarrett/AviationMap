@@ -30,6 +30,13 @@ def getMetar(airport):
     weather = requests.get(f'{BASE_URL}{METAR_URL}{airport}')
     m = weather.json()
     return m[airport]['category']
+
+def getWXMetar(airport):
+    hdr = {"X-API-Key": "ce822455b5f84c2788bee768f8"}
+    weather = requests.get(f"https://api.checkwx.com/metar/{airport}/decoded", headers=hdr)
+
+    m = weather.json()
+    return m["data"][0]["flight_category"]
         
 def weatherColor(strip):
     # airports[6] = 7A5
@@ -49,6 +56,27 @@ def weatherColor(strip):
             color = NO_DATA
         
         
+        strip.setPixelColor(i, color)
+        strip.show()
+
+
+def weatherWXColor(strip):
+    # airports[6] = 7A5
+    airports = ['KALX', 'KAUO', 'KCSG', 'KPXE',
+                'KOPN', 'KLGC', 'KLGC', 'KANB',
+                'KANB', 'KGAD', 'KCTJ', 'KCCO',
+                'KFFC', 'KPUJ', 'KRYY', 'KFTY',
+                'KATL', 'KPDK', 'KLZU', 'KD73']
+
+    for i in range(len(airports)):
+        weather = getWXMetar(airports[i])
+        print(i)
+        print(airports[i])
+        try:
+            color = weather_color_map[weather]
+        except:
+            color = NO_DATA
+
         strip.setPixelColor(i, color)
         strip.show()
         
@@ -75,8 +103,9 @@ if __name__ == '__main__':
     strip.begin()
     while True:
         try:
-            weatherColor(strip)
-            time.sleep(350)
+            # weatherColor(strip)
+            weatherWXColor(strip)
+            time.sleep(45)
             
         except Exception as e:
             boardWipe(strip)
