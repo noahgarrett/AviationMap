@@ -66,15 +66,14 @@ def weatherWXColor(strip):
                 'KATL', 'KPDK', 'KLZU', 'KD73']
 
     for i in range(len(airports)):
-        weather = getWXMetar(airports[i])
-        if weather == "":
-            weather = getManualWeather(airports[i])
-        print(i)
-        print(airports[i])
+        color = NO_DATA
         try:
+            weather = getWXMetar(airports[i])
+            if weather == "":
+                weather = getManualWeather(airports[i])
             color = weather_color_map[weather]
-        except:
-            color = NO_DATA
+        except Exception as e:
+            print(f'{e} has no data: Check ASOS')
 
         strip.setPixelColor(i, color)
         strip.show()
@@ -126,7 +125,7 @@ if __name__ == '__main__':
         try:
             # weatherColor(strip)
             weatherWXColor(strip)
-            time.sleep(60)
+            time.sleep(120)
             
         except Exception as e:
             boardWipe(strip)
